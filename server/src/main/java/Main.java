@@ -12,7 +12,7 @@ public class Main {
         SearchEngine searchEngine = new SearchEngine();
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
 
-        // ── Serve frontend files ──────────────────────────────
+        // ── Serve frontend files 
         server.createContext("/", exchange -> {
             String path = exchange.getRequestURI().getPath();
             if (path.equals("/")) path = "/index.html";
@@ -47,7 +47,7 @@ public class Main {
             exchange.getResponseBody().close();
         });
 
-        // ── Search API ────────────────────────────────────────
+        // ── Search API
         server.createContext("/api/search", exchange -> {
             exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
             exchange.getResponseHeaders().set("Content-Type", "application/json");
