@@ -1,4 +1,4 @@
-# 🔍 BM·SEARCH — Boyer-Moore Pattern Matching Engine
+# 🔍 TEXT SEARCH ENGINE — Boyer-Moore Pattern Matching Engine
 
 > A mini search engine built in Java with a sleek dark-themed browser UI, featuring multiple string-matching algorithms, keyword indexing, frequency analysis, and DNA pattern matching.
 
