@@ -71,8 +71,8 @@ text-search-engine/
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/YOUR_USERNAME/bm-search-engine.git
-cd bm-search-engine/server
+git clone https://github.com/mdkbk/text-search-engine.git
+cd text-search-engine/server
 ```
 
 ### 2. Compile
