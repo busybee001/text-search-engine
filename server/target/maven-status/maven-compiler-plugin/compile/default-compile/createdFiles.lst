@@ -1,0 +1,8 @@
+model/Document.class
+Main.class
+engine/SearchEngine$SearchResult.class
+engine/Indexer.class
+util/DocumentLoader.class
+engine/SearchEngine.class
+algorithms/BoyerMoore.class
+engine/FrequencyAnalyzer.class

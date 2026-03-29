@@ -19,7 +19,7 @@ public class SearchEngine {
         this.frequencyAnalyzer = new FrequencyAnalyzer(documents);
     }
 
-    // ── Called by the HTTP server ─────────────────────────────
+    // ── Called by the HTTP server 
     /**
      * Run a search and return positions + stats.
      * @param text      the corpus to search in
@@ -48,7 +48,7 @@ public class SearchEngine {
         return result;
     }
 
-    // ── Original console methods (kept intact) ────────────────
+    // ── Original console methods (kept intact) 
     public void search(String query) {
         System.out.println("\nSearching for: \"" + query + "\"");
         System.out.println("──────────────────────────────");
@@ -75,7 +75,7 @@ public class SearchEngine {
         }
     }
 
-    // ── Naive search ──────────────────────────────────────────
+    // ── Naive search 
     private SearchResult naiveSearch(String text, String pattern) {
         SearchResult r = new SearchResult();
         int n = text.length(), m = pattern.length();
@@ -88,7 +88,7 @@ public class SearchEngine {
         return r;
     }
 
-    // ── KMP search ────────────────────────────────────────────
+    // ── KMP search 
     private SearchResult kmpSearch(String text, String pattern) {
         SearchResult r = new SearchResult();
         int n = text.length(), m = pattern.length();
@@ -110,7 +110,7 @@ public class SearchEngine {
         return r;
     }
 
-    // ── Rabin-Karp search ─────────────────────────────────────
+    // ── Rabin-Karp search 
     private SearchResult rabinKarpSearch(String text, String pattern) {
         SearchResult r = new SearchResult();
         int n = text.length(), m = pattern.length();
@@ -135,7 +135,7 @@ public class SearchEngine {
         return r;
     }
 
-    // ── Result model ──────────────────────────────────────────
+    // ── Result model 
     public static class SearchResult {
         public List<Integer> positions = new ArrayList<>();
         public int comparisons = 0;
