@@ -47,6 +47,59 @@ public class Main {
             exchange.getResponseBody().close();
         });
 
+        // ── List all documents ────────────────────────────────
+server.createContext("/api/documents", exchange -> {
+    exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
+    exchange.getResponseHeaders().set("Content-Type", "application/json");
+
+    File docsDir = new File("docs");
+    StringBuilder json = new StringBuilder("[");
+
+    if (docsDir.exists() && docsDir.isDirectory()) {
+        File[] files = docsDir.listFiles((d, name) -> name.endsWith(".txt"));
+        if (files != null) {
+            for (int i = 0; i < files.length; i++) {
+                json.append("\"").append(files[i].getName()).append("\"");
+                if (i < files.length - 1) json.append(",");
+            }
+        }
+    }
+    json.append("]");
+
+    byte[] resp = json.toString().getBytes();
+    exchange.sendResponseHeaders(200, resp.length);
+    exchange.getResponseBody().write(resp);
+    exchange.getResponseBody().close();
+});
+
+// Load a specific document 
+server.createContext("/api/document", exchange -> {
+    exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
+    exchange.getResponseHeaders().set("Content-Type", "text/plain; charset=utf-8");
+
+    String query    = exchange.getRequestURI().getQuery();
+    String fileName = "";
+    if (query != null && query.startsWith("file=")) {
+        fileName = query.substring(5).replace("%20", " ").replace("+", " ");
+    }
+
+    fileName = new File(fileName).getName();
+    File file = new File("docs/" + fileName);
+
+    if (!file.exists() || !fileName.endsWith(".txt")) {
+        byte[] msg = "File not found".getBytes();
+        exchange.sendResponseHeaders(404, msg.length);
+        exchange.getResponseBody().write(msg);
+        exchange.getResponseBody().close();
+        return;
+    }
+
+    byte[] bytes = Files.readAllBytes(file.toPath());
+    exchange.sendResponseHeaders(200, bytes.length);
+    exchange.getResponseBody().write(bytes);
+    exchange.getResponseBody().close();
+});
+
         // ── Search API
         server.createContext("/api/search", exchange -> {
             exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");

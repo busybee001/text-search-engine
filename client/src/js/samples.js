@@ -50,3 +50,30 @@
          Enter a pattern and hit Search.
        </div>`;
    }
+
+   //Fetch document list from Java backend
+async function loadDocumentList() {
+  const select = document.getElementById('docSelect');
+  try {
+    const res   = await fetch('/api/documents');
+    const files = await res.json();
+    if (files.length === 0) {
+      select.innerHTML = '<option value="">No docs/ files found</option>';
+      return;
+    }
+    select.innerHTML = '<option value="">— pick a document —</option>' +
+      files.map(f => `<option value="${f}">${f}</option>`).join('');
+  } catch (err) {
+    select.innerHTML = '<option value="">Server unavailable</option>';
+  }
+}
+
+async function loadDocument() {
+  const fileName = document.getElementById('docSelect').value;
+  if (!fileName) return;
+  const res  = await fetch(`/api/document?file=${encodeURIComponent(fileName)}`);
+  const text = await res.text();
+  document.getElementById('corpus').value = text;
+}
+
+document.addEventListener('DOMContentLoaded', loadDocumentList);
