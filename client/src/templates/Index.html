@@ -32,6 +32,7 @@
     <button class="tab" onclick="switchTab(event,'index')">Index</button>
     <button class="tab" onclick="switchTab(event,'dna')">DNA Mode</button>
     <button class="tab" onclick="switchTab(event,'visualizer')">Visualizer</button>
+    <button class="tab" onclick="switchTab(event,'benchmark')">Benchmark</button>
   </div>
 
   <!-- ══════════════════════════════════
@@ -256,7 +257,22 @@
         <button class="btn secondary" onclick="vizPlay()" id="vizPlayBtn">▶ Auto</button>
         <span class="viz-counter" id="vizCounter"></span>
       </div>
+    </div> 
+  </div>
+
+   <!-- ══════════════════════════════════
+       BENCHMARK PANEL
+  ══════════════════════════════════ -->
+  <div id="panel-benchmark" class="panel">
+    <div style="margin-top:28px" class="card">
+      <div class="card-title">// Algorithm Benchmark</div>
+      <div class="row">
+        <input type="text" id="benchPattern" placeholder="Enter pattern to benchmark…" style="flex:1"/>
+        <button class="btn primary" onclick="runBenchmark()" style="height:38px">Run Benchmark</button>
+      </div>
+      <div id="benchStats" style="margin-top:12px;font-size:.75rem;color:var(--muted)">Uses the corpus from the Search tab.</div>
     </div>
+    <div id="benchChart" style="margin-top:20px"></div>
   </div>
 
 </div><!-- /app -->
@@ -269,6 +285,7 @@
 <script src="/static/js/indexer.js"></script>
 <script src="/static/js/dna.js"></script>
 <script src="/static/js/visualizer.js"></script>
+<script src="/static/js/benchmark.js"></script>
 <script src="/static/js/app.js"></script>
 </body>
 </html>
