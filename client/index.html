@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BM Search — Boyer-Moore Engine</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/static/css/main.css"/>
+  <link rel="stylesheet" href="/static/css/components.css"/>
+  <link rel="stylesheet" href="/static/css/panels.css"/>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── Header ── -->
+  <header>
+    <div class="logo-block">
+      <div class="logo"><span class="logo-dot"></span> BM·SEARCH</div>
+      <div class="tagline">Boyer-Moore Pattern Matching Engine</div>
+    </div>
+    <div class="badges">
+      <span class="badge badge-green">Boyer-Moore</span>
+      <span class="badge badge-blue">Keyword Index</span>
+      <span class="badge badge-red">DNA Matching</span>
+    </div>
+  </header>
+
+  <!-- ── Tabs ── -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab(event,'search')">Search</button>
+    <button class="tab" onclick="switchTab(event,'frequency')">Frequency</button>
+    <button class="tab" onclick="switchTab(event,'index')">Index</button>
+    <button class="tab" onclick="switchTab(event,'dna')">DNA Mode</button>
+    <button class="tab" onclick="switchTab(event,'visualizer')">Visualizer</button>
+    <button class="tab" onclick="switchTab(event,'benchmark')">Benchmark</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       SEARCH PANEL
+  ══════════════════════════════════ -->
+  <div id="panel-search" class="panel active">
+    <div class="search-grid">
+
+      <!-- Corpus input -->
+      <div class="card">
+        <!--<div class="card-title">// Document Corpus</div>-->
+        <div class="field">
+          <label>Paste or type text</label>
+          <textarea id="corpus" placeholder="Paste your document content here…&#10;&#10;Example: The quick brown fox jumps over the lazy dog."></textarea>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label>Or load sample</label>
+            <select id="sampleSelect" onchange="loadSample()">
+              <option value="">— pick sample —</option>
+              <option value="lorem">Lorem Ipsum</option>
+              <option value="dna_sample">DNA Sequence</option>
+              <option value="code_sample">Code Snippet</option>
+            </select>
+          </div>
+          <div class="field btn-align">
+            <button class="btn secondary full" onclick="clearAll()">Clear</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Load from docs/ folder</label>
+        <div class="row">
+          <select id="docSelect" style="flex:1">
+            <option value="">Loading documents…</option>
+          </select>
+          <button id="loadDocBtn" class="btn primary"
+                  onclick="loadDocument()"
+                  style="height:38px;padding:0 16px">Load</button>
+        </div>
+      </div>
+
+      <!-- Search config -->
+      <div class="card">
+       <!-- <div class="card-title">// Search Config</div>-->
+        <div class="field">
+          <label>Algorithm</label>
+          <div class="algo-options">
+            <button class="algo-btn selected" onclick="selectAlgo(this,'bm')">
+              <span class="algo-name">Boyer-Moore</span>
+              <span class="algo-desc">Bad char + good suffix heuristics</span>
+            </button>
+            <button class="algo-btn" onclick="selectAlgo(this,'naive')">
+              <span class="algo-name">Naive</span>
+              <span class="algo-desc">Brute-force O(nm) baseline</span>
+            </button>
+            <button class="algo-btn" onclick="selectAlgo(this,'kmp')">
+              <span class="algo-name">KMP</span>
+              <span class="algo-desc">Failure function prefix matching</span>
+            </button>
+            <button class="algo-btn" onclick="selectAlgo(this,'rk')">
+              <span class="algo-name">Rabin-Karp</span>
+              <span class="algo-desc">Rolling hash comparison</span>
+            </button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Options</label>
+          <div class="checkbox-group">
+            <label class="check-label">
+              <input type="checkbox" id="caseSensitive"> Case-sensitive
+            </label>
+            <label class="check-label">
+              <input type="checkbox" id="wholeWord"> Whole word
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search bar -->
+    <div class="search-bar-wrap">
+      <div class="search-input-wrap">
+        <span class="icon">⌕</span>
+        <input type="text" id="mainSearch" placeholder="Enter pattern to search…"
+               onkeydown="if(event.key==='Enter') runSearch()"/>
+      </div>
+      <button class="btn" onclick="runSearch()">Search</button>
+      <div class="spinner" id="spinner"></div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row" id="statsRow" style="display:none">
+      <div class="stat-chip"><span class="stat-val" id="statMatches">0</span><span class="stat-label">Matches</span></div>
+      <div class="stat-chip"><span class="stat-val" id="statComparisons">0</span><span class="stat-label">Comparisons</span></div>
+      <div class="stat-chip"><span class="stat-val" id="statShifts">0</span><span class="stat-label">Shifts</span></div>
+      <div class="stat-chip"><span class="stat-val" id="statTime">0ms</span><span class="stat-label">Time</span></div>
+      <div class="stat-chip"><span class="stat-val" id="statAlgo">BM</span><span class="stat-label">Algorithm</span></div>
+    </div>
+
+    <!-- Results -->
+    <div class="results-section">
+      <div class="results-header">
+        <div class="results-title">// Results</div>
+        <button class="btn secondary sm" onclick="clearResults()">Clear</button>
+      </div>
+      <div id="results">
+        <div class="empty-state">
+          <span class="big">{ }</span>
+          Enter a pattern and hit Search.<br/>
+          Boyer-Moore scans right-to-left using bad-character &amp; good-suffix heuristics.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       FREQUENCY PANEL
+  ══════════════════════════════════ -->
+  <div id="panel-frequency" class="panel">
+    <div class="freq-grid">
+      <div>
+        <div class="card-title" style="margin-bottom:16px">// Word Frequency (Top 20)</div>
+        <div id="freqBars">
+          <div class="empty-state" style="padding:40px 0">
+            <span class="big" style="font-size:2rem">~</span>
+            Load a document in the Search tab first.
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card-title" style="margin-bottom:16px">// Character Frequency</div>
+        <div id="charFreqBars">
+          <div class="empty-state" style="padding:40px 0;font-size:.75rem;color:var(--muted)">Awaiting corpus…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       INDEX PANEL
+  ══════════════════════════════════ -->
+  <div id="panel-index" class="panel">
+    <div class="index-toolbar">
+      <div style="flex:1;min-width:200px">
+        <input type="text" id="indexFilter" placeholder="Filter index…" oninput="renderIndex()"/>
+      </div>
+      <button class="btn" onclick="buildIndex()">Rebuild Index</button>
+    </div>
+    <div id="indexContent">
+      <div class="empty-state" style="margin-top:40px">
+        <span class="big" style="font-size:2rem">#</span>
+        Build the index from the Search tab corpus.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       DNA PANEL
+  ══════════════════════════════════ -->
+  <div id="panel-dna" class="panel">
+    <div class="search-grid" style="margin-top:28px">
+      <div class="card">
+        <div class="card-title">// DNA Sequence</div>
+        <div class="field">
+          <label>Sequence (A T G C only)</label>
+          <textarea id="dnaSeq"
+            placeholder="e.g. ATGCGATACGTAGCTAGCTAGCATCGTAGCTAGCTA"
+            class="dna-input"
+            oninput="this.value=this.value.toUpperCase().replace(/[^ATGC]/g,'')"></textarea>
+        </div>
+        <button class="btn secondary full" onclick="loadDNASample()">Load Sample Sequence</button>
+      </div>
+      <div class="card">
+        <div class="card-title">// Pattern</div>
+        <div class="field">
+          <label>DNA Pattern to find</label>
+          <input type="text" id="dnaPattern" placeholder="e.g. ATCG"
+            class="dna-input"
+            oninput="this.value=this.value.toUpperCase().replace(/[^ATGC]/g,'')"/>
+        </div>
+        <button class="btn full" style="margin-top:8px" onclick="runDNASearch()">Find Pattern</button>
+        <div id="dnaStats" class="dna-stats"></div>
+      </div>
+    </div>
+    <div class="card-title" style="margin-top:24px;margin-bottom:8px">// Visualized Sequence</div>
+    <div class="dna-display" id="dnaDisplay">
+      <span style="color:var(--muted)">Sequence will render here…</span>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       VISUALIZER PANEL
+  ══════════════════════════════════ -->
+  <div id="panel-visualizer" class="panel">
+    <div class="card" style="margin-top:28px">
+      <div class="card-title">// Boyer-Moore Step Visualizer</div>
+      <div class="row">
+        <div class="field">
+          <label>Text</label>
+          <input type="text" id="vizText" value="ABCAABABCABCABCAB"/>
+        </div>
+        <div class="field">
+          <label>Pattern</label>
+          <input type="text" id="vizPattern" value="ABCAB"/>
+        </div>
+      </div>
+      <button class="btn" onclick="initViz()">Start Visualization</button>
+    </div>
+
+    <div class="viz-wrap" id="vizWrap" style="display:none">
+      <div class="viz-step-label" id="vizStepLabel">Step 0</div>
+      <div class="viz-section-label">TEXT</div>
+      <div class="viz-chars" id="vizTextChars"></div>
+      <div class="viz-section-label" style="margin-top:10px">PATTERN</div>
+      <div class="viz-chars" id="vizPatChars"></div>
+      <div class="viz-info" id="vizInfo"></div>
+      <div class="viz-controls">
+        <button class="btn secondary" onclick="vizStep(-1)" id="vizPrev">◀ Prev</button>
+        <button class="btn" onclick="vizStep(1)" id="vizNext">Next ▶</button>
+        <button class="btn secondary" onclick="vizPlay()" id="vizPlayBtn">▶ Auto</button>
+        <span class="viz-counter" id="vizCounter"></span>
+      </div>
+    </div> 
+  </div>
+
+   <!-- ══════════════════════════════════
+       BENCHMARK PANEL
+  ══════════════════════════════════ -->
+  <div id="panel-benchmark" class="panel">
+    <div style="margin-top:28px" class="card">
+      <div class="card-title">// Algorithm Benchmark</div>
+      <div class="row">
+        <input type="text" id="benchPattern" placeholder="Enter pattern to benchmark…" style="flex:1"/>
+        <button class="btn primary" onclick="runBenchmark()" style="height:38px">Run Benchmark</button>
+      </div>
+      <div id="benchStats" style="margin-top:12px;font-size:.75rem;color:var(--muted)">Uses the corpus from the Search tab.</div>
+    </div>
+    <div id="benchChart" style="margin-top:20px"></div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- JS modules loaded in dependency order -->
+<script src="/static/js/samples.js"></script>
+<script src="/static/js/algorithms.js"></script>
+<script src="/static/js/search.js"></script>
+<script src="/static/js/frequency.js"></script>
+<script src="/static/js/indexer.js"></script>
+<script src="/static/js/dna.js"></script>
+<script src="/static/js/visualizer.js"></script>
+<script src="/static/js/benchmark.js"></script>
+<script src="/static/js/app.js"></script>
+</body>
+</html>
