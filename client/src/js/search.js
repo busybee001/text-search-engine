@@ -1,7 +1,7 @@
 'use strict';
 
 // ── API endpoint — Java backend 
-const API_BASE = '/api';
+const API_BASE = 'https://text-search-engine-production.up.railway.app';
 
 // ── Main entry point 
 async function runSearch() {
