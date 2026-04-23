@@ -1,0 +1,7 @@
+{
+    "rewrites": [
+      { "source": "/static/css/(.*)", "destination": "/src/static/css/$1" },
+      { "source": "/static/js/(.*)",  "destination": "/src/js/$1" },
+      { "source": "/(.*)",            "destination": "/src/templates/index.html" }
+    ]
+  }
