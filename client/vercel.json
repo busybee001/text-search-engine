@@ -1,7 +1,8 @@
 {
-    "rewrites": [
-      { "source": "/static/css/(.*)", "destination": "/src/static/css/$1" },
-      { "source": "/static/js/(.*)",  "destination": "/src/js/$1" },
-      { "source": "/(.*)",            "destination": "/src/templates/index.html" }
+    "version": 2,
+    "routes": [
+      { "src": "/static/css/(.*)", "dest": "/src/static/css/$1" },
+      { "src": "/static/js/(.*)",  "dest": "/src/js/$1" },
+      { "src": "/(.*)",            "dest": "/src/templates/index.html" }
     ]
   }
