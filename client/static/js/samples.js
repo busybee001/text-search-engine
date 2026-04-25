@@ -55,7 +55,7 @@
 async function loadDocumentList() {
   const select = document.getElementById('docSelect');
   try {
-    const res   = await fetch('/api/documents');
+      const res   = await fetch('https://text-search-engine.onrender.com/api/documents');
     const files = await res.json();
     if (files.length === 0) {
       select.innerHTML = '<option value="">No docs/ files found</option>';
@@ -71,7 +71,7 @@ async function loadDocumentList() {
 async function loadDocument() {
   const fileName = document.getElementById('docSelect').value;
   if (!fileName) return;
-  const res  = await fetch(`/api/document?file=${encodeURIComponent(fileName)}`);
+    const res  = await fetch(`https://text-search-engine.onrender.com/api/document?file=${encodeURIComponent(fileName)}`);
   const text = await res.text();
   document.getElementById('corpus').value = text;
 }
