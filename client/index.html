@@ -64,37 +64,36 @@
         </div>
       </div>
 
-      <div class="field">
-        <label>Load from docs/ folder</label>
-        <div class="row">
-          <select id="docSelect" style="flex:1">
-            <option value="">Loading documents…</option>
-          </select>
-          <button id="loadDocBtn" class="btn primary"
-                  onclick="loadDocument()"
-                  style="height:38px;padding:0 16px">Load</button>
+        <div>
+            <div class="field">
+                <label>Load from docs/ folder</label>
+                <div class="row">
+                    <select id="docSelect" style="flex:1">
+                        <option value="">Loading documents…</option>
+                    </select>
+                    <button id="loadDocBtn" class="btn primary" onclick="loadDocument()">Load</button>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Upload your file</label>
+                <div class="row upload-row">
+                    <input type="file" id="fileUpload" accept=".txt" style="display: none;">
+
+                    <button class="btn primary" onclick="document.getElementById('fileUpload').click()">
+                        Choose File
+                    </button>
+
+                    <span id="fileName" class="file-name">
+        No file chosen
+      </span>
+
+                    <button class="btn primary" onclick="uploadFile()">
+                        Upload
+                    </button>
+                </div>
+            </div>
         </div>
-      </div>   <!-- closes first .field -->
-          <div class="field">
-              <label>Upload your file</label>
-              <div class="row upload-row">
-                  <input type="file" id="fileUpload" accept=".txt" style="display: none;">
-
-                  <button class="btn primary" onclick="document.getElementById('fileUpload').click()">
-                      Choose File
-                  </button>
-
-                  <span id="fileName" class="file-name">
-      No file chosen
-    </span>
-
-                  <button class="btn primary" onclick="uploadFile()">
-                      Upload
-                  </button>
-              </div>
-          </div>
-      </div>
-
       <!-- Search config -->
       <div class="card">
        <!-- <div class="card-title">// Search Config</div>-->
