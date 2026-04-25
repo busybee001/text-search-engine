@@ -62,11 +62,12 @@
   .field:last-child {
     margin-bottom: 0;
   }
-  
-  .row {
+
+.row {
     display: flex;
-    gap: 12px;
-  }
+    align-items: center;
+    gap: 15px;
+}
   .row .field {
     flex: 1;
   }
