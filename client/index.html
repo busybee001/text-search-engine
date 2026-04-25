@@ -77,8 +77,19 @@
           <div class="field">
               <label>Upload your file</label>
               <div class="row">
-                  <input type="file" id="fileUpload" accept=".txt">
-                  <button class="btn primary" onclick="uploadFile()">Upload</button>
+                  <input type="file" id="fileUpload" accept=".txt" style="display: none;">
+
+                  <button class="btn primary" onclick="document.getElementById('fileUpload').click()">
+                      Choose File
+                  </button>
+
+                  <span id="fileName" style="margin-left:10px; color:#aaa;">
+      No file chosen
+    </span>
+
+                  <button class="btn primary" onclick="uploadFile()">
+                      Upload
+                  </button>
               </div>
           </div>
       </div>

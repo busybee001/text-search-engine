@@ -84,6 +84,7 @@ async function uploadFile() {
         alert("Please select a file");
         return;
     }
+    document.getElementById('fileName').innerText = file.name;
 
     const text = await file.text();
 
