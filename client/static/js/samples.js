@@ -76,4 +76,19 @@ async function loadDocument() {
   document.getElementById('corpus').value = text;
 }
 
+async function uploadFile() {
+    const fileInput = document.getElementById('fileUpload');
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert("Please select a file");
+        return;
+    }
+
+    const text = await file.text();
+
+    // Put uploaded content into textarea
+    document.getElementById('corpus').value = text;
+}
+
 document.addEventListener('DOMContentLoaded', loadDocumentList);
