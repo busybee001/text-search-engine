@@ -211,3 +211,13 @@
     padding: 0 2px;
     font-weight: 600;
   }
+.upload-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.file-name {
+    color: #aaa;
+    min-width: 140px;
+}
